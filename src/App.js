@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import { Canvas, extend, useThree } from '@react-three/fiber'
+import { PerspectiveCamera } from '@react-three/drei'
+import { OrbitControls, TransformControls } from 'three-stdlib'
+import { generateTrees } from './treeGenerator'
+import { Tree } from './Tree'
+import './App.css'
 
-function App() {
+extend({ OrbitControls, TransformControls })
+
+function Controls() {
+  const { camera, gl } = useThree()
+  const orbitControls = new OrbitControls(camera, gl.domElement)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <orbitControls />
+      {/* <transformControls /> */}
+    </>
+  )
 }
 
-export default App;
+function App() {
+  const [trees, setTrees] = useState([]);
+  useEffect(() => {
+    document.title = 'Tree Generator'
+
+    setTrees(generateTrees(5, 3))
+
+    return () => {
+      document.title = 'Tree Generator'
+    }
+  }, [])
+  return (
+    <div className="App">
+      <Canvas>
+        {/* <PerspectiveCamera makeDefault manual /> */}
+        {/* <Controls /> */}
+        <ambientLight intensity={0.1} />
+        <pointLight position={[10, 10, 10]} />
+        <Tree />
+      </Canvas>
+    </div>
+  )
+}
+
+export default App
