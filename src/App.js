@@ -1,43 +1,51 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Canvas, extend, useThree } from '@react-three/fiber'
-import { PerspectiveCamera } from '@react-three/drei'
-import { OrbitControls, TransformControls } from 'three-stdlib'
-import { generateTrees } from './treeGenerator'
-import { Tree } from './Tree'
+import { OrbitControls } from '@react-three/drei'
+import { generateTrees } from './utils/treeGenerator'
+import { Environment } from './components/Environment'
+import { Tree } from './components/Tree'
 import './App.css'
 
-extend({ OrbitControls, TransformControls })
-
-function Controls() {
-  const { camera, gl } = useThree()
-  const orbitControls = new OrbitControls(camera, gl.domElement)
-  return (
-    <>
-      <orbitControls />
-      {/* <transformControls /> */}
-    </>
-  )
-}
-
 function App() {
+  const [maxNodes, setMaxNodes] = useState(5);
+  const [maxLeaves, setMaxLeaves] = useState(3);
   const [trees, setTrees] = useState([]);
   useEffect(() => {
     document.title = 'Tree Generator'
-
-    setTrees(generateTrees(5, 3))
+    
+    const generatedTrees = generateTrees(maxNodes, maxLeaves);
+    setTrees([...generatedTrees]);
 
     return () => {
       document.title = 'Tree Generator'
     }
   }, [])
+
+  const treeComponents = useMemo(() => {
+    return Array.from(trees).map((tree, index) => {
+      return <Tree key={index} data={tree} index={index} />;
+    });
+  }, [trees]);
+
   return (
     <div className="App">
-      <Canvas>
-        {/* <PerspectiveCamera makeDefault manual /> */}
-        {/* <Controls /> */}
-        <ambientLight intensity={0.1} />
-        <pointLight position={[10, 10, 10]} />
-        <Tree />
+      <input type="number" value={maxNodes} onChange={(e) => setMaxNodes(e.target.value)} />
+      <input type="number" value={maxLeaves} onChange={(e) => setMaxLeaves(e.target.value)} />
+      <button onClick={() => setTrees(generateTrees(maxNodes, maxLeaves))}>Generate Trees</button>
+      <Canvas
+        shadows
+        dpr={[1, 1.5]}
+        camera={{ position: [-15, 10, 15], fov: 25 }}
+      >
+        <color attach="background" args={['skyblue']} />
+        <group position={[0, -0.5, 0]} rotation={[0, -0.75, 0]}>
+          <ambientLight intensity={0.1} />
+          <directionalLight color="red" position={[0, 0, 5]} />
+          
+          {treeComponents}
+        </group>
+        <Environment />
+        <OrbitControls makeDefault />
       </Canvas>
     </div>
   )
