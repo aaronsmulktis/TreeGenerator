@@ -3,8 +3,8 @@
 "A program to generate all possible trees with N nodes that have less than or equal to M leaf nodes."
 
 Two major features:
-- Prints out the trees as they are generated
-- minimize the time required to generate each successive tree
+- Prints out the trees in the CLI
+- Renders trees via ThreeJS
 
 Show the generated trees, and count the total number of trees for:
 1) `N = 8`, `M = 5`
