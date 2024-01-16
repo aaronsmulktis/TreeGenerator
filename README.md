@@ -18,3 +18,5 @@ Show the generated trees, and count the total number of trees for:
 ## Running ThreeJS Visualization UI
 
 `yarn start`
+
+![Screenshot 2024-01-15 at 7 19 15 PM](https://github.com/aaronsmulktis/TreeGenerator/assets/1779579/72a5b282-4074-43bd-b5c4-26fbeda8653c)
